@@ -64,10 +64,13 @@ sudo systemctl enable --now docker
 ```
 
 
-This installation will add docker group to the system without any users. Add your user account to the group to run docker commands as non-privileged user.
+This installation will add docker group to the system without any users. Add your user account to the group to run 
+docker commands as non-privileged user.
 ```shell
+# add docker group to current user
 sudo usermod -aG docker $USER
-newgrp docker
+
+# you need to re-login to get the updated group 
 ```
 
 ## 3. Test the docker and docker compose
