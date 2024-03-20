@@ -95,3 +95,13 @@ sudo systemctl start mysql/mariadb
 # connect to the server with the new password
 mysql -u root -p
 ```
+
+## I
+
+```shell
+# get a sql terminal
+mysql -u root -p
+
+# get the current database innodb_page_size
+show variables like '%innodb_page_size%';
+```
