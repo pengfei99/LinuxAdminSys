@@ -96,7 +96,11 @@ sudo systemctl start mysql/mariadb
 mysql -u root -p
 ```
 
-## I
+## Change innodb_page_size
+When we encounter **Row Size Too Large Errors with InnoDB** error, we may need to increase the innodb_page_size
+
+To learn more details of this bug, you can visit this page
+https://mariadb.com/kb/en/troubleshooting-row-size-too-large-errors-with-innodb/
 
 ```shell
 # get a sql terminal
@@ -104,4 +108,29 @@ mysql -u root -p
 
 # get the current database innodb_page_size
 show variables like '%innodb_page_size%';
+exit;
+
+# stop the db daemon
+sudo systemctl stop mysql
+
+# backup the system database (e.g. innodb) data and log files
+# in debian os, the data ibdata1 and the log files (ib_logfile0 & ib_logfile1) are located at /var/lib/mysql
+cd /var/lib/mysql/
+sudo mkdir /tmp/innodb_bkp
+sudo mv ibdata1 /tmp/innodb_bkp
+sudo sudo mv ib_logfile* /tmp/innodb_bkp
+
+# now change the innodb_page_size value
+# in debian, the mysql/mariadb conf file are located /etc/mysql/my.cnf
+# you can add the below line in the [mysqld]
+# suppose we want to put 8k, the default value for MariaDB-1:10.4.33 is 16k
+[mysqld]
+innodb_page_size=8k
+
+# restart the mysql daemon
+sudo systemctl start mysql
+
 ```
+
+> after changing the innodb_page_size, the existing database may not work properly, so you may need to export/import
+  the existing database for safety.
