@@ -20,6 +20,7 @@ Import MariaDB gpg key and repo
 sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
 
 # Add the apt repository
+# Note the below apt-repository url is for ubuntu, for other distribution you may need to change the url
 sudo add-apt-repository "deb [arch=amd64,arm64,ppc64el] http://mariadb.mirror.liquidtelecom.com/repo/10.4/ubuntu $(lsb_release -cs) main"
 
 sudo apt update

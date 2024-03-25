@@ -1,5 +1,6 @@
 # Manage a mysql/mariadb database
 
+## Basic commands 
 ```mysql
 # create a database
 create database <db_name>;
@@ -23,4 +24,31 @@ GRANT ALL PRIVILEGES ON * . * TO 'matthew'@'%';
 # After granting the necessary privileges to the user, you can use the FLUSH PRIVILEGES statement to make the 
 # changes take effect. This statement has the following form:
 FLUSH PRIVILEGES;
+```
+
+## Enable remote access
+
+By default, mysql/mariadb only listens to local host, and forbid all remote access. To enable it, you need to change
+the default config.
+
+```shell
+# verify current stat
+netstat -ant | grep 3306
+
+# you should see something like this
+tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN      3731352/mysqld  
+ 
+# change the default config
+sudo vim /etc/mysql/my.cnf
+
+# find the line bind-address = 127.0.0.1 and change it to 
+bind-address = 0.0.0.0
+
+# restart the service 
+sudo systemctl restart mysql/mariadb
+
+# check the new bind ip
+$ netstat -ant | grep 3306
+
+tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN
 ```
