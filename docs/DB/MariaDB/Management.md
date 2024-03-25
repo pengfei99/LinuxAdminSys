@@ -28,6 +28,8 @@ FLUSH PRIVILEGES;
 
 ## Enable remote access
 
+### Step1: Update server bind address
+
 By default, mysql/mariadb only listens to local host, and forbid all remote access. To enable it, you need to change
 the default config.
 
@@ -52,3 +54,49 @@ $ netstat -ant | grep 3306
 
 tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN
 ```
+
+### Step2: Update user authorization
+
+By default, mysql set an acl for each user to a database with a list of authorize ip. If user try to connect to a server
+with an authorized ip address, the connexion will be denied.
+
+Below is an example to set proper acl to allow user to connect to a database with an authorized IP address.
+
+```shell
+# First, log in to the MySQL/MariaDB server with the root privilege:
+
+$ mysql -u admin -p
+
+# create a new db
+MariaDB [(none)]> CREATE DATABASE wpdb;
+
+# create a user 
+MariaDB [(none)]> CREATE USER  'wpuser'@'localhost' IDENTIFIED BY 'password';
+
+
+# you will need to grant permissions to the remote system with IP address 208.117.84.50 to connect to the database named wpdb as user wpuser. You can do it with the following command:
+MariaDB [(none)]> GRANT ALL ON wpdb.* to 'wpuser'@'208.117.84.50' IDENTIFIED BY 'password' WITH GRANT OPTION;
+
+# Next, flush the privileges and exit from the MariaDB shell with the following command:
+
+MariaDB [(none)]> FLUSH PRIVILEGES;
+MariaDB [(none)]> EXIT;
+
+# If you want to grant remote access on all databases for wpuser, run the following command:
+MariaDB [(none)]> GRANT ALL ON *.* to 'wpuser'@'208.117.84.50' IDENTIFIED BY 'password' WITH GRANT OPTION;
+
+# If you want to grant access to all remote IP addresses on wpdb as wpuser, use % instead of IP address (208.117.84.50) as shown below:
+MariaDB [(none)]> GRANT ALL ON wpdb.* to 'wpuser'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
+
+# If you want to grant access to all IP addresses in the subnet 208.117.84.0/24 on wpdb as user wpuser, run the following command:
+MariaDB [(none)]> GRANT ALL ON wpdb.* to 'wpuser'@'208.117.84.%' IDENTIFIED BY 'password' WITH GRANT OPTION;
+```
+
+A brief explanation of each parameter is shown below:
+
+- wpdb: It is the name of the MariaDB database that the user wants to connect to.
+- wpuser: It is the name of the MariaDB database user.
+- 208.117.84.50: It is the IP address of the remote system from which the user wants to connect.
+- password: It is the password of the database user.
+
+
