@@ -99,4 +99,13 @@ A brief explanation of each parameter is shown below:
 - 208.117.84.50: It is the IP address of the remote system from which the user wants to connect.
 - password: It is the password of the database user.
 
+### Test connection from remote server
+
+```shell
+$ sudo apt-get install mariadb-client -y
+
+# Once the installation is completed, connect to the MariaDB server by running the following command on the remote system:
+mysql -u <uid> -h <db-ip> -p
+```
+
 
