@@ -50,6 +50,11 @@ OAuth 2.0 doesn’t define a specific format for Access Tokens. However, in some
 format is often used. This enables token issuers to include data in the token itself. Also, for security reasons, 
 Access Tokens may have an expiration date.
 
+### Refresh Token
+As the access token are `short lived`, we use **Refresh token** to obtain access token. Refresh tokens are issued to 
+the client by the authorization server and are used to obtain a new access token when the current access token
+becomes invalid or expires
+
 ## 2. How Does OAuth 2.0 Work?
 
 As we mentioned before, Oauth 2.0 is not an authentication protocol, but an authorization protocol. 
