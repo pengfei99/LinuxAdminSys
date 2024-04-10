@@ -1,133 +1,4 @@
-# Install openldap server on debian 11/10
-
-## 1. Prepare the server
-
-Before installing the ldap server, you need to prepare it.
-
-### 1.1  Configure FQDN hostname for your server
-
-You need to create a FQDN hostname and add a record to file/etc/hosts.
-```shell
-sudo vim /etc/hosts
-10.50.5.57 ldap.casd.local
-
-# Configure hostname
-sudo hostnamectl set-hostname ldap.casd.local --static
-```
-
-### 1.2 Update the server 
-
-```shell
-# fix the hashicorp repo key
-curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --yes --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-
- echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list > /dev/null
-
-sudo apt -y update && sudo apt -y upgrade
-sudo reboot
-```
-
-## 2. Install the openldap package
-
-```shell
-sudo apt -y install slapd ldap-utils
-```
-
-After the above command, you will be prompted to enter the **admin password** for your LDAP directory
-
-**The base dn of the ldap server will be generated base on your FQDN hostname**. So if your fqdn is not right, don't continue just restart from step 1.
-
-## 3. Set up the base structure 
-
-You can consider the ldap server as a database of your users and groups. To better organise them,
-we need to create some basic structures.
-
-Below is an example, you can set up something more complex
-
-```basedb.ldif
-dn: ou=people,dc=casd,dc=local
-objectClass: organizationalUnit
-ou: people
-
-dn: ou=groups,dc=casd,dc=local
-objectClass: organizationalUnit
-ou: groups
-```
-
-Load the above entry to the ldap server
-
-```shell
-sudo ldapadd -x -D cn=admin,dc=casd,dc=local -W -f basedn.ldif
-```
-
-## 4. Add sample user account and group
-
-### 4.1 Add a new user account
-
-1. Create a password hash for the user account
-
-```shell
-sudo slappasswd
-New password:
-Re-enter new password:
-{SSHA}vjbMsVOMBOyB2/oZ1tiFGptF/ArMGwGH
-
-```
-
-2. Create a `user.ldif` file
-
-```shell
-dn: uid=pliuT,ou=people,dc=casd,dc=local
-objectClass: inetOrgPerson
-objectClass: posixAccount
-objectClass: shadowAccount
-cn: Pengfei
-sn: Liu
-userPassword: {SSHA}vjbMsVOMBOyB2/oZ1tiFGptF/ArMGwGH
-loginShell: /bin/bash
-homeDirectory: /home/users/pliu
-uidNumber: 3000
-gidNumber: 3000
-```
-
-3. Add it to the ldap server
-
-```shell
-sudo ldapadd -x -D cn=admin,dc=casd,dc=local -W -f user.ldif
-```
-
-
-### 4.2 Add a new group 
-
-1. Create a `group.ldif`
-
-```shell
-dn: cn=developers,ou=groups,dc=casd,dc=local
-objectClass: posixGroup
-cn: developers
-gidNumber: 3000
-memberUid: pliuT
-```
-2. Add it to the ldap server
-
-```shell
-sudo ldapadd -x -D cn=admin,dc=casd,dc=local -W -f group.ldif
-```
-
-## 5. Install a ldap client
-
-You have many choice. But I recommend `Apache Directory Studio`.
-
-
-After download, unzip it and run the command `./ApacheDirectoryStudio`
-
-In side the UI, create a new `ldap connection`, enter the server host name and port.
-
-Then enter the admin acount and password e.g. `cn=admin,dc=casd,dc=local`.
-
-If everything works well, you should see the content of the ldap server.
-
-## 6. Use ldap as auth server for linux
+# Configure debian server ssh to use pam ldap
 
 We will use **libpam-ldapd** as the ldap server client and server authenticator to check user login and password via ldap server. It is a newer alternative to the original `libpam-ldap`. **libpam-ldapd** uses the same backend `(nslcd)` as `libnss-ldapd`, and thus also shares the same configuration file `(/etc/nslcd.conf)` for LDAP connection parameters. If you're already using libnss-ldapd for NSS, it may be more convenient to use libpam-ldapd's **pam_ldap** implementation.
 
@@ -144,7 +15,7 @@ The **nslcd** is the name service LDAP connection daemon.
 ```shell
 sudo apt-get install libnss-ldapd libpam-ldapd
 ```
-After the install, a pop up will require you to enter the `ldap uri` and the `base dn` of the ldap server
+After the installation, a pop-up window will require you to enter the `ldap uri` and the `base dn` of the ldap server
 
 For example
 ```text
@@ -158,7 +29,7 @@ ldap_base_dn: dc=casd,dc=local
 #### 6.2.1 The first config is `/etc/nslcd.conf`
 As you already enter some information during installation. This file is filled with some info.
 
-Below is an working example.
+Below is a working example.
 
 ```text
 # /etc/nslcd.conf
