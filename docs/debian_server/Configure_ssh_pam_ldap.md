@@ -199,3 +199,8 @@ To troubleshoot problems you can run `nslcd in debug mode` (remember to stop nsc
 /etc/init.d/nslcd stop
 nslcd -d
 ```
+
+
+## For AD compatibility
+
+To use **AD** as authentication server, we can't use `nslcd` anymore. We need to test the `sssd` and `AD` connexion.
