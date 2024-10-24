@@ -1,6 +1,8 @@
-## Pod vs container
+# Introduction of k8s concepts
 
-### Pod (Kubernetes Concept)
+
+
+## Pod (Kubernetes Concept)
 
 `A pod is the smallest deployable unit in Kubernetes`. It represents **a group of one or more containers** that are 
 scheduled and managed together.
@@ -16,8 +18,18 @@ Pod Characteristics:
             replicas are running, restarting containers if needed, and ensuring the pod matches its defined state.
    - **High-Level Abstraction**: A pod abstracts away container specifics, letting Kubernetes manage the 
                           complexity of container scheduling, scaling, networking, and storage.
+## Pod Sandbox
+A pod sandbox sets up the environment for the containers, including network, storage, and DNS settings. Each pod is 
+associated with one sandbox. All containers within the same pod share the same sandbox, meaning 
+they share the same network namespace and IP address.
 
-### Container (containerd Concept):
+The sandbox also isolates the resources that belong to a pod from others.
+
+### Sandbox status
+
+
+
+## Container (containerd Concept):
 
 A **container is a runtime instance of a containerized application** (such as an individual Docker container). 
 It is a `single, isolated process` on the system with its own filesystem, networking, and process tree.
@@ -31,3 +43,4 @@ Container Characteristics:
                      share the same network).
   - **Single Unit**: A container is usually thought of as a single unit of an application, typically mapped to 
            one image (e.g., an NGINX server running in a container).
+
