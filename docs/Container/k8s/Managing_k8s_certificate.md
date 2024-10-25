@@ -29,3 +29,4 @@ cp ca.key /etc/kubernetes/pki/ca.key
 # run the kubeadm init
 ```
 
+## 
