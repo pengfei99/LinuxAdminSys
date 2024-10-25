@@ -13,9 +13,9 @@ registry.k8s.io/pause:3.10
 registry.k8s.io/etcd:3.5.15-0
 )
 
-for image_name in ${images[@]} ; do
-docker pull $image_name
+for image_name in "${images[@]}" ; do
+docker pull "${image_name}"
 casd_image_name="${repo_url}/${project_name}/${image_name#*/}"
-docker tag $image_name $casd_image_name
-docker push $casd_image_name
+docker tag "${image_name}" "${casd_image_name}"
+docker push "${casd_image_name}"
 done
