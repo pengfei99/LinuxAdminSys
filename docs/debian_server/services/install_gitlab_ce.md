@@ -29,7 +29,7 @@ sudo apt -y install curl vim openssh-server ca-certificates
 
 ## 3. Configure Postfix Send-Only SMTP
 
-You can find the full doc [here](../Install_configure_Postfix_to_sendmail.md)
+You can find the full doc [here](../os_setup/Install_configure_Postfix_to_sendmail.md)
 
 ## 4. Add the GitLab CE Repository 
 
