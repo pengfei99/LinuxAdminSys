@@ -14,11 +14,15 @@ ssh server that listens to port 22 (default port). It supports many authenticati
 
 
 
-
-
 ### 1.1 Terms
 
-In linux, we use many daemons for the authentication service to work
+On linux server, to allow user remote access, we use many daemons:
+
+- sshd
+- pam(Pluggable Authentication Modules):
+- sssd(System Security Services Daemon)**Recommended**: Provides access to remote identity and authentication providers, such as LDAP, Active Directory (AD), FreeIPA, or Kerberos.
+- nslcd(Name Service LDAP Daemon) **deprecated**: Connects the Name Service Switch (NSS) and PAM to an LDAP directory for user authentication and identity lookup.
+- nscd(Name Service Cache Daemon): Caches results from services like DNS and LDAP to reduce query load. sssd has its own caching mechanism, do not recommend when using sssd.
 
 ### 1.2 SSH client server authentication workflow 
 
@@ -36,22 +40,24 @@ ssh user@debian-server
 > The SSH daemon (sshd) on the Debian server receives the connection request and begins the authentication process.
 
 #### Step2. SSHD Hands Authentication to PAM
+
 SSHD is configured to use PAM (Pluggable Authentication Modules) for user authentication.
-It checks /etc/pam.d/sshd, which includes configurations for authentication backends.
+It checks **/etc/pam.d/sshd**, which includes configurations for authentication backends.
 PAM invokes the relevant authentication module, in this case, SSSD.
-3. PAM Calls SSSD for Authentication
-PAM is configured to use SSSD via the module:
-sh
-Copy
-Edit
-/etc/pam.d/common-auth
-which contains:
-sh
-Copy
-Edit
+
+
+#### Step3. PAM Calls SSSD for Authentication
+
+PAM is configured to use SSSD via the module: **/etc/pam.d/common-auth**
+
+You should see the below line which tells pam to query sssd for authentication
+
+```shell
 auth    [success=1 default=ignore]    pam_sss.so
-This tells PAM to query SSSD for authentication.
-4. SSSD Queries OpenLDAP for User Authentication
+```
+
+#### Step 4. SSSD Queries OpenLDAP/kerberos for User Authentication
+
 SSSD Configuration (/etc/sssd/sssd.conf) specifies OpenLDAP as the backend.
 SSSD checks if the credentials are cached:
 If cached, it allows authentication without querying OpenLDAP (useful for offline authentication).
