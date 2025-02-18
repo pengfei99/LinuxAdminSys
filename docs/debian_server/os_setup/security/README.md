@@ -62,18 +62,22 @@ SSSD Configuration (/etc/sssd/sssd.conf) specifies OpenLDAP as the backend.
 SSSD checks if the credentials are cached:
 If cached, it allows authentication without querying OpenLDAP (useful for offline authentication).
 If not cached, SSSD sends the authentication request to OpenLDAP.
-5. OpenLDAP Validates User Credentials
+
+
+#### Step 5. OpenLDAP Validates User Credentials
 OpenLDAP checks:
 If the user exists in the LDAP directory (uid=user).
 The password stored in LDAP.
 If using LDAP bind authentication, OpenLDAP attempts to bind as the user with the provided password.
 If using Kerberos (via LDAP), OpenLDAP defers authentication to a Kerberos KDC.
-6. Authentication Result Passed Back
+
+#### Step 6. Authentication Result Passed Back
 If authentication is successful, OpenLDAP responds to SSSD.
 SSSD caches the credentials (if caching is enabled).
 SSSD informs PAM of the successful authentication.
 PAM notifies SSHD that the user is authenticated.
-7. SSHD Grants Access
+
+#### Step 7. SSHD Grants Access
 If the user has the correct authorization (i.e., shell access, SSH keys, group policies), SSHD grants access.
 The user gets a shell on the Debian server.
 Authentication Flow Summary
@@ -85,7 +89,9 @@ OpenLDAP → Verifies user credentials.
 SSSD → Returns authentication result to PAM.
 PAM → Informs SSHD.
 SSHD → Grants or denies access.
-Additional Notes
+
+
+#### Additional Notes
 If 2FA (Two-Factor Authentication) is enabled, PAM may prompt for additional verification.
 If public key authentication is used, SSHD may bypass PAM and authenticate using the user's SSH key.
 If the LDAP server is down, authentication fails unless SSSD has cached credentials.
