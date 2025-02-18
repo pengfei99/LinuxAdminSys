@@ -1,0 +1,9 @@
+dn: cn=config
+changetype: modify
+replace: olcSaslHost
+olcSaslHost: krb.casd.local
+
+dn: cn=config
+changetype: modify
+replace: olcSaslRealm
+olcSaslRealm: CASD.LOCAL
