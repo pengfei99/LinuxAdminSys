@@ -1,0 +1,31 @@
+# What is Kubeadm?
+
+Kubeadm is a tool to set up a minimum viable Kubernetes cluster without much complex configuration. Also, Kubeadm
+makes the whole process easy by running a series of prechecking to ensure that the server has all the
+essential components and configs to run Kubernetes.
+
+It is developed and maintained by the official Kubernetes community. There are other options like `minikube`, `kind`,
+etc., that are pretty easy to set up.
+
+
+## How Does Kubeadm Work?
+
+When you initialize a Kubernetes cluster using Kubeadm, it does the following.
+
+1. When you initialize kubeadm, first it runs all the preflight checks to validate the system state,
+     and it downloads all the `required cluster container images` from the `registry.k8s.io` container registry.
+2. It then generates required TLS certificates and stores them in the /etc/kubernetes/pki folder.
+3. Next, it generates all the kubeconfig files for the cluster components in the /etc/kubernetes folder.
+4. Then it starts the kubelet service and generates the static pod manifests for all the cluster components and saves it in the `/etc/kubernetes/manifests` folder.
+5. Next, it starts all the control plane components from the static pod manifests.
+6. Then it installs core DNS and Kubeproxy components
+7. Finally, it generates the node bootstrap token.
+8. Worker nodes use this token to join the control plane.
+
+
+![kubeadm_workflow.png](../../../images/kubeadm_workflow.png)
+
+## Kubeadm Port Requirements
+Please refer to the following image and make sure all the ports are allowed for the control plane (master) and the worker nodes. If you are setting up the kubeadm cluster cloud servers, ensure you allow the ports in the firewall configuration.
+
+![k8s-port-requirements.webp](../../../images/k8s-port-requirements.webp)
