@@ -51,7 +51,7 @@ Look at the "Events" section at the bottom, check if there are:
 ### 3. Check Container Logs
 If the pod reached running state briefly:
 ```shell
-kubectl logs ingress-nginx-controller-qt489 -n ingress-nginx
+kubectl logs ingress-nginx-controller-qcd  -n ingress-nginx
 ```
 If the pod has multiple containers (e.g., controller + admission):
 
