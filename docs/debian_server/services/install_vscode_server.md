@@ -31,10 +31,20 @@ The official github page of the `code-server` is here: https://github.com/coder/
 # use the installation script
 curl -fsSL https://code-server.dev/install.sh | sh
 
-# start the server
+# start the server interactivately
 code-server
 
 ```
+> We recommand you to run code server via systemd
+
+```shell
+# start the code-server daemon
+sudo systemctl start code-server@$USER
+
+# enable it from boot
+sudo systemctl enable --now code-server@$USER
+```
+
 
 The above command will generate a config  **~/.config/code-server/config.yaml**. Below is an example of the config file
 
